@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🤖 أكاديمية البرمجة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink-light: #fce4ec;
+    --pink-main: #f8bbd0;
+    --pink-mid: #f48fb1;
+    --pink-dark: #e91e8c;
+    --yellow-light: #fffde7;
+    --yellow-main: #fff176;
+    --yellow-bright: #ffeb3b;
+    --yellow-gold: #ffc107;
+    --white: #ffffff;
+    --text-dark: #4a1942;
+    --text-mid: #7b3f72;
+    --shadow: rgba(233,30,140,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: linear-gradient(135deg, #fce4ec 0%, #fdf3f9 40%, #fffde7 100%);
+    min-height: 100vh;
+    color: var(--text-dark);
+    overflow-x: hidden;
+  }
+
+  /* Floating bubbles background */
+  .bg-bubbles {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 0; overflow: hidden;
+  }
+  .bubble {
+    position: absolute; border-radius: 50%;
+    animation: floatUp linear infinite;
+    opacity: 0.25;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(110vh) scale(0.8); opacity: 0; }
+    10% { opacity: 0.3; }
+    90% { opacity: 0.2; }
+    100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 2px solid var(--pink-main);
+    padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 4px 20px var(--shadow);
+  }
+  .nav-logo {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 22px; font-weight: 900;
+    background: linear-gradient(135deg, var(--pink-dark), var(--yellow-gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .nav-score {
+    background: linear-gradient(135deg, var(--yellow-bright), var(--yellow-gold));
+    border-radius: 20px; padding: 6px 16px;
+    font-weight: 700; font-size: 14px; color: var(--text-dark);
+    box-shadow: 0 2px 8px rgba(255,193,7,0.4);
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    position: relative; z-index: 1;
+    text-align: center; padding: 40px 20px 30px;
+  }
+  .robot-icon {
+    font-size: 70px; display: block;
+    animation: bounce 2s ease-in-out infinite;
+    filter: drop-shadow(0 10px 30px rgba(233,30,140,0.3));
+  }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .hero h1 {
+    font-family: 'Tajawal', sans-serif;
+    font-size: clamp(26px, 6vw, 40px);
+    font-weight: 900; margin: 12px 0 8px;
+    background: linear-gradient(135deg, var(--pink-dark), #c2185b, var(--yellow-gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero p { color: var(--text-mid); font-size: 16px; max-width: 480px; margin: 0 auto; }
+
+  /* Progress bar */
+  .progress-wrap {
+    margin: 20px auto; max-width: 400px;
+    background: var(--pink-main); border-radius: 20px; height: 14px;
+    overflow: hidden; box-shadow: inset 0 2px 6px rgba(0,0,0,0.08);
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--yellow-bright), var(--yellow-gold), var(--pink-dark));
+    border-radius: 20px; transition: width 0.6s ease;
+    box-shadow: 0 2px 8px rgba(255,193,7,0.5);
+  }
+  .progress-label { text-align: center; font-size: 13px; color: var(--text-mid); margin-top: 4px; font-weight: 600; }
+
+  /* ===== TABS ===== */
+  .tabs {
+    display: flex; gap: 8px; justify-content: center;
+    padding: 0 16px 20px; flex-wrap: wrap; position: relative; z-index: 1;
+  }
+  .tab-btn {
+    padding: 10px 20px; border-radius: 25px; border: 2px solid var(--pink-mid);
+    background: white; color: var(--text-mid); font-family: 'Cairo', sans-serif;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    transition: all 0.3s; box-shadow: 0 2px 8px var(--shadow);
+  }
+  .tab-btn.active, .tab-btn:hover {
+    background: linear-gradient(135deg, var(--pink-dark), #c2185b);
+    color: white; border-color: var(--pink-dark);
+    transform: translateY(-2px); box-shadow: 0 6px 20px rgba(233,30,140,0.35);
+  }
+
+  /* ===== MAIN CONTENT ===== */
+  .content { position: relative; z-index: 1; padding: 0 16px 40px; max-width: 700px; margin: 0 auto; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: white; border-radius: 24px; padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 32px var(--shadow), 0 2px 8px rgba(0,0,0,0.04);
+    border: 2px solid var(--pink-light);
+    transition: transform 0.3s, box-shadow 0.3s;
+    animation: fadeIn 0.5s ease forwards;
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px var(--shadow); }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+  }
+  .card-icon {
+    width: 52px; height: 52px; border-radius: 16px; display: flex;
+    align-items: center; justify-content: center; font-size: 26px;
+    background: linear-gradient(135deg, var(--pink-light), var(--yellow-light));
+    box-shadow: 0 4px 12px var(--shadow); flex-shrink: 0;
+  }
+  .card-title { font-size: 18px; font-weight: 900; color: var(--text-dark); }
+  .card-subtitle { font-size: 13px; color: var(--text-mid); margin-top: 2px; }
+
+  .card p { color: var(--text-mid); line-height: 1.9; font-size: 15px; }
+  .card p + p { margin-top: 10px; }
+
+  /* Highlight box */
+  .highlight-box {
+    background: linear-gradient(135deg, var(--pink-light), var(--yellow-light));
+    border-right: 4px solid var(--pink-dark);
+    border-radius: 12px; padding: 14px 16px; margin: 14px 0;
+    font-size: 14px; color: var(--text-dark); line-height: 1.8;
+  }
+  .highlight-box strong { color: var(--pink-dark); }
+
+  /* Code block */
+  .code-block {
+    background: #2d1b35; color: #f8bbd0;
+    border-radius: 14px; padding: 16px; margin: 14px 0;
+    font-family: 'Courier New', monospace; font-size: 13px;
+    line-height: 1.8; direction: ltr; text-align: left;
+    box-shadow: inset 0 2px 12px rgba(0,0,0,0.3);
+    overflow-x: auto; position: relative;
+  }
+  .code-block .kw { color: var(--yellow-bright); font-weight: bold; }
+  .code-block .str { color: #a5d6a7; }
+  .code-block .cm { color: #9e9e9e; font-style: italic; }
+  .code-block .fn { color: #f48fb1; }
+  .code-block .num { color: var(--yellow-gold); }
+  .code-label {
+    position: absolute; top: 10px; left: 12px;
+    font-size: 11px; color: #9e9e9e; font-family: 'Cairo', sans-serif;
+  }
+
+  /* Visual diagram */
+  .diagram {
+    background: linear-gradient(135deg, #fff3f8, #fffde7);
+    border-radius: 16px; padding: 20px; margin: 14px 0;
+    border: 2px dashed var(--pink-mid); text-align: center;
+  }
+  .diagram-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; margin: 8px 0; flex-wrap: wrap;
+  }
+  .diagram-box {
+    background: white; border-radius: 12px; padding: 10px 16px;
+    border: 2px solid var(--pink-mid); font-size: 13px; font-weight: 700;
+    color: var(--text-dark); box-shadow: 0 4px 12px var(--shadow);
+    min-width: 80px;
+  }
+  .diagram-box.yellow {
+    background: var(--yellow-light); border-color: var(--yellow-gold);
+  }
+  .diagram-box.pink {
+    background: var(--pink-light); border-color: var(--pink-dark);
+    color: var(--pink-dark);
+  }
+  .diagram-arrow { font-size: 20px; color: var(--pink-dark); }
+
+  /* Comparison table */
+  .compare-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+  .compare-table th {
+    background: linear-gradient(135deg, var(--pink-dark), #c2185b);
+    color: white; padding: 12px; font-size: 14px;
+    text-align: center;
+  }
+  .compare-table th:first-child { border-radius: 12px 0 0 12px; }
+  .compare-table th:last-child { border-radius: 0 12px 12px 0; }
+  .compare-table td {
+    background: white; padding: 12px; text-align: center;
+    font-size: 13px; color: var(--text-mid); border: 1px solid var(--pink-light);
+  }
+  .compare-table td:first-child { border-radius: 12px 0 0 12px; font-weight: 700; color: var(--text-dark); background: var(--pink-light); }
+  .compare-table td:last-child { border-radius: 0 12px 12px 0; }
+  .compare-table tr:hover td { background: var(--yellow-light); }
+
+  /* Badge */
+  .badge {
+    display: inline-block; border-radius: 20px; padding: 4px 12px;
+    font-size: 12px; font-weight: 700; margin: 3px;
+  }
+  .badge-pink { background: var(--pink-light); color: var(--pink-dark); border: 1px solid var(--pink-mid); }
+  .badge-yellow { background: var(--yellow-light); color: #e65100; border: 1px solid var(--yellow-gold); }
+
+  /* ===== QUIZ ===== */
+  .quiz-card {
+    background: white; border-radius: 24px; padding: 24px;
+    box-shadow: 0 8px 32px var(--shadow);
+    border: 2px solid var(--pink-light); margin-bottom: 20px;
+  }
+  .quiz-q-num {
+    font-size: 12px; font-weight: 700; color: var(--pink-dark);
+    margin-bottom: 8px; letter-spacing: 1px; text-transform: uppercase;
+  }
+  .quiz-question { font-size: 17px; font-weight: 700; color: var(--text-dark); margin-bottom: 20px; line-height: 1.7; }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-option {
+    padding: 14px 18px; border-radius: 14px;
+    border: 2px solid var(--pink-light);
+    background: white; cursor: pointer; font-size: 15px;
+    font-family: 'Cairo', sans-serif; color: var(--text-dark);
+    transition: all 0.25s; text-align: right; font-weight: 600;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .quiz-option:hover:not(.selected) {
+    border-color: var(--pink-mid);
+    background: var(--pink-light);
+    transform: translateX(-4px);
+  }
+  .quiz-option.correct { background: #e8f5e9; border-color: #4caf50; color: #1b5e20; }
+  .quiz-option.wrong { background: #ffebee; border-color: #f44336; color: #b71c1c; }
+  .quiz-option.selected { pointer-events: none; }
+  .option-dot {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 2px solid var(--pink-mid); display: flex;
+    align-items: center; justify-content: center; font-size: 12px;
+    font-weight: 700; flex-shrink: 0;
+  }
+  .feedback {
+    margin-top: 14px; padding: 12px 16px; border-radius: 12px;
+    font-size: 14px; font-weight: 600; display: none; line-height: 1.7;
+  }
+  .feedback.show { display: block; animation: fadeIn 0.3s ease; }
+  .feedback.ok { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+  .feedback.no { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+
+  .quiz-nav {
+    display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap;
+  }
+  .btn {
+    padding: 12px 28px; border-radius: 25px; border: none;
+    font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: all 0.3s;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--pink-dark), #c2185b);
+    color: white; box-shadow: 0 4px 16px rgba(233,30,140,0.4);
+  }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(233,30,140,0.5); }
+  .btn-secondary {
+    background: var(--yellow-bright); color: var(--text-dark);
+    box-shadow: 0 4px 12px rgba(255,235,59,0.4); border: 2px solid var(--yellow-gold);
+  }
+  .btn-secondary:hover { transform: translateY(-3px); }
+
+  /* Result */
+  .result-card {
+    text-align: center; padding: 40px 24px;
+    background: linear-gradient(135deg, white, var(--pink-light));
+    border-radius: 24px; border: 2px solid var(--pink-mid);
+    box-shadow: 0 8px 32px var(--shadow);
+  }
+  .result-emoji { font-size: 70px; animation: bounce 1s ease infinite; display: block; }
+  .result-score {
+    font-size: 52px; font-weight: 900;
+    background: linear-gradient(135deg, var(--pink-dark), var(--yellow-gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .result-msg { font-size: 18px; color: var(--text-mid); margin: 8px 0 20px; font-weight: 600; }
+  .stars { font-size: 30px; margin: 10px 0; }
+
+  /* ===== GLOSSARY ===== */
+  .glossary-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 16px; border-radius: 16px; margin-bottom: 12px;
+    background: white; border: 2px solid var(--pink-light);
+    transition: all 0.3s; cursor: default;
+  }
+  .glossary-item:hover { border-color: var(--pink-mid); background: var(--pink-light); }
+  .glossary-icon { font-size: 28px; flex-shrink: 0; }
+  .glossary-term { font-size: 16px; font-weight: 900; color: var(--text-dark); }
+  .glossary-def { font-size: 14px; color: var(--text-mid); margin-top: 4px; line-height: 1.7; }
+
+  /* Tip box */
+  .tip-box {
+    background: linear-gradient(135deg, var(--yellow-light), #fff8e1);
+    border-right: 4px solid var(--yellow-gold);
+    border-radius: 12px; padding: 14px 16px; margin: 14px 0;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .tip-box .tip-icon { font-size: 20px; flex-shrink: 0; }
+  .tip-box .tip-text { font-size: 14px; color: var(--text-dark); line-height: 1.8; }
+
+  /* Lesson nav */
+  .lesson-nav {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    justify-content: center; margin-bottom: 20px;
+  }
+  .lesson-btn {
+    padding: 8px 16px; border-radius: 20px;
+    border: 2px solid var(--pink-light);
+    background: white; cursor: pointer; font-size: 13px;
+    font-family: 'Cairo', sans-serif; font-weight: 700;
+    color: var(--text-mid); transition: all 0.2s;
+  }
+  .lesson-btn.active {
+    background: linear-gradient(135deg, var(--pink-dark), #c2185b);
+    color: white; border-color: transparent;
+    box-shadow: 0 4px 12px rgba(233,30,140,0.35);
+  }
+  .lesson-btn.done { background: var(--yellow-light); border-color: var(--yellow-gold); color: #e65100; }
+
+  /* Responsive */
+  @media(max-width: 480px) {
+    .tabs { gap: 6px; }
+    .tab-btn { padding: 8px 14px; font-size: 13px; }
+    .card { padding: 18px; }
+  }
+
+  /* Confetti */
+  .confetti-piece {
+    position: fixed; width: 10px; height: 10px;
+    border-radius: 2px; pointer-events: none; z-index: 999;
+    animation: confettiFall 2s ease forwards;
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Background bubbles -->
+<div class="bg-bubbles" id="bubbles"></div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-logo">🤖 أكاديمية البرمجة</div>
+  <div class="nav-score" id="scoreDisplay">⭐ 0 نقطة</div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <span class="robot-icon">🤖</span>
+  <h1>تعلّم البرمجة من الصفر</h1>
+  <p>رحلتك في عالم البرمجة تبدأ هنا! دروس ممتعة واختبارات تثبّت المعلومات 🚀</p>
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progressBar" style="width:0%"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">ابدأ أول درس لتبدأ رحلتك! 🌟</div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="showSection('lessons')">📚 الدروس</button>
+  <button class="tab-btn" onclick="showSection('quiz')">🧠 الاختبار</button>
+  <button class="tab-btn" onclick="showSection('compare')">⚖️ مقارنة اللغات</button>
+  <button class="tab-btn" onclick="showSection('glossary')">📖 المصطلحات</button>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- ===== LESSONS ===== -->
+  <div class="section active" id="lessons">
+    <div class="lesson-nav" id="lessonNav"></div>
+    <div id="lessonContent"></div>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div class="section" id="quiz">
+    <div id="quizContainer"></div>
+  </div>
+
+  <!-- ===== COMPARE ===== -->
+  <div class="section" id="compare">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">⚖️</div>
+        <div>
+          <div class="card-title">مقارنة لغات البرمجة</div>
+          <div class="card-subtitle">اعرف الفرق بين أشهر اللغات</div>
+        </div>
+      </div>
+
+      <div class="diagram" style="margin-bottom:16px;">
+        <p style="font-weight:700;color:var(--text-dark);font-size:15px;margin-bottom:12px;">🌍 أشهر لغات البرمجة</p>
+        <div class="diagram-row">
+          <div class="diagram-box pink">Python 🐍</div>
+          <div class="diagram-box yellow">JavaScript 🌐</div>
+          <div class="diagram-box pink">Java ☕</div>
+        </div>
+        <div class="diagram-row">
+          <div class="diagram-box yellow">C++ ⚡</div>
+          <div class="diagram-box pink">Swift 🍎</div>
+          <div class="diagram-box yellow">Kotlin 📱</div>
+        </div>
+      </div>
+
+      <div class="tip-box">
+        <div class="tip-icon">💡</div>
+        <div class="tip-text">كل لغة صُمِّمت لغرض معين! ليس هناك لغة "أفضل من الكل" — الأمر يعتمد على ماذا تريد أن تصنع.</div>
+      </div>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>اللغة</th>
+            <th>تُستخدم في</th>
+            <th>صعوبتها</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>🐍 Python</td>
+            <td>ذكاء اصطناعي، تحليل بيانات، أتمتة</td>
+            <td><span class="badge badge-yellow">سهلة للمبتدئ</span></td>
+          </tr>
+          <tr>
+            <td>🌐 JavaScript</td>
+            <td>مواقع الويب، تطبيقات المتصفح</td>
+            <td><span class="badge badge-yellow">متوسطة</span></td>
+          </tr>
+          <tr>
+            <td>☕ Java</td>
+            <td>تطبيقات أندرويد، برامج الشركات</td>
+            <td><span class="badge badge-pink">صعبة نسبياً</span></td>
+          </tr>
+          <tr>
+            <td>⚡ C++</td>
+            <td>الألعاب، الأنظمة، الروبوتات</td>
+            <td><span class="badge badge-pink">صعبة</span></td>
+          </tr>
+          <tr>
+            <td>🍎 Swift</td>
+            <td>تطبيقات iPhone و Mac</td>
+            <td><span class="badge badge-yellow">متوسطة</span></td>
+          </tr>
+          <tr>
+            <td>📱 Kotlin</td>
+            <td>تطبيقات أندرويد الحديثة</td>
+            <td><span class="badge badge-yellow">متوسطة</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box" style="margin-top:16px;">
+        <strong>🎯 توصيتي لكِ كمبتدئة:</strong> ابدئي بـ <strong>Python</strong>! قواعدها بسيطة وواضحة، وتستطيعين رؤية نتائج رائعة بسرعة. بعدها كل لغة ثانية ستكون أسهل بكثير. 🌟
+      </div>
+    </div>
+
+    <!-- Web vs App -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🗺️</div>
+        <div>
+          <div class="card-title">خارطة عالم البرمجة</div>
+          <div class="card-subtitle">ما الذي يمكنك بناؤه؟</div>
+        </div>
+      </div>
+
+      <div class="diagram">
+        <p style="font-weight:900;font-size:15px;color:var(--text-dark);margin-bottom:14px;">🌐 البرمجة</p>
+        <div class="diagram-row">
+          <div style="text-align:center;">
+            <div class="diagram-box pink" style="margin-bottom:6px;">تطبيقات الجوال 📱</div>
+            <div style="font-size:12px;color:var(--text-mid);">Swift / Kotlin</div>
+          </div>
+          <div style="text-align:center;">
+            <div class="diagram-box yellow" style="margin-bottom:6px;">مواقع الإنترنت 🌐</div>
+            <div style="font-size:12px;color:var(--text-mid);">HTML / JavaScript</div>
+          </div>
+          <div style="text-align:center;">
+            <div class="diagram-box pink" style="margin-bottom:6px;">ذكاء اصطناعي 🤖</div>
+            <div style="font-size:12px;color:var(--text-mid);">Python</div>
+          </div>
+        </div>
+        <div class="diagram-row" style="margin-top:10px;">
+          <div style="text-align:center;">
+            <div class="diagram-box yellow" style="margin-bottom:6px;">ألعاب فيديو 🎮</div>
+            <div style="font-size:12px;color:var(--text-mid);">C++ / C#</div>
+          </div>
+          <div style="text-align:center;">
+            <div class="diagram-box pink" style="margin-bottom:6px;">برامج حاسوب 💻</div>
+            <div style="font-size:12px;color:var(--text-mid);">Java / C++</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== GLOSSARY ===== -->
+  <div class="section" id="glossary">
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-header">
+        <div class="card-icon">📖</div>
+        <div>
+          <div class="card-title">قاموس البرمجة</div>
+          <div class="card-subtitle">المصطلحات الأساسية بأبسط شرح</div>
+        </div>
+      </div>
+    </div>
+    <div id="glossaryList"></div>
+  </div>
+
+</div><!-- end content -->
+
+<script>
+// ===== DATA =====
+const lessons = [
+  {
+    id: 0,
+    icon: "🌟",
+    title: "ما هي البرمجة؟",
+    subtitle: "الدرس الأول: البداية",
+    content: `
+      <p>البرمجة ببساطة هي <strong style="color:var(--pink-dark)">إعطاء تعليمات للحاسوب</strong> كي ينفّذ مهمة معينة. تخيّلي الحاسوب كطاهٍ لا يعرف إلا ما تخبرينه! إذا لم تقولي له "ضع الملح"، لن يفعل ذلك.</p>
+      <div class="diagram">
+        <p style="font-weight:700;color:var(--text-dark);margin-bottom:12px;">🍳 مثال: وصفة طبخ مقابل برنامج</p>
+        <div class="diagram-row">
+          <div class="diagram-box yellow">وصفة الطبخ<br><small>تعليمات للإنسان</small></div>
+          <div class="diagram-arrow">↔️</div>
+          <div class="diagram-box pink">برنامج<br><small>تعليمات للحاسوب</small></div>
+        </div>
+      </div>
+      <div class="highlight-box">
+        <strong>🔑 المفهوم الأساسي:</strong> البرنامج = مجموعة خطوات مرتبة تُخبر الحاسوب بماذا يفعل، خطوة خطوة، بالترتيب الصحيح.
+      </div>
+      <p>البرامج التي تستخدمينها يومياً مثل واتساب، يوتيوب، وسناب شات — كلها كُتبت بلغات برمجية من بشر مثلك!</p>
+      <div class="tip-box"><div class="tip-icon">💡</div><div class="tip-text">لا تحتاجين إلى أن تكوني عبقرية في الرياضيات! البرمجة تحتاج إلى <strong>تفكير منطقي</strong> أكثر من أي شيء آخر.</div></div>
+    `
+  },
+  {
+    id: 1,
+    icon: "🔤",
+    title: "المتغيّرات",
+    subtitle: "الدرس الثاني: صناديق المعلومات",
+    content: `
+      <p>المتغيّر (Variable) هو مثل <strong style="color:var(--pink-dark)">صندوق يخزّن فيه معلومة</strong>. تعطي الصندوق اسماً، وتضع فيه أي قيمة تريدينها.</p>
+      <div class="diagram">
+        <p style="font-weight:700;color:var(--text-dark);margin-bottom:12px;">📦 تخيّلي المتغيّر هكذا:</p>
+        <div class="diagram-row">
+          <div class="diagram-box pink" style="min-width:100px;">
+            <div style="font-size:11px;color:var(--pink-dark);margin-bottom:4px;">اسم الصندوق</div>
+            <strong>اسمي</strong>
+          </div>
+          <div class="diagram-arrow">←</div>
+          <div class="diagram-box yellow" style="min-width:120px;">
+            <div style="font-size:11px;color:#e65100;margin-bottom:4px;">محتوى الصندوق</div>
+            <strong>"سارة"</strong>
+          </div>
+        </div>
+      </div>
+      <div class="code-block">
+        <span class="code-label">Python 🐍</span><br><br>
+        <span class="cm"># إنشاء متغيّر يخزّن اسمك</span><br>
+        <span class="kw">اسمي</span> = <span class="str">"سارة"</span><br>
+        <span class="kw">عمري</span> = <span class="num">20</span><br>
+        <span class="kw">طالبة</span> = <span class="kw">True</span><br><br>
+        <span class="cm"># استخدام المتغيّر</span><br>
+        <span class="fn">print</span>(<span class="str">"مرحباً"</span>, اسمي)
+      </div>
+      <div class="highlight-box">
+        <strong>📌 أنواع المتغيّرات:</strong><br>
+        🔤 <strong>نص (String):</strong> "مرحبا"، "سارة"<br>
+        🔢 <strong>رقم صحيح (Integer):</strong> 5، 20، 100<br>
+        💯 <strong>رقم عشري (Float):</strong> 3.14، 1.5<br>
+        ✅ <strong>صح/خطأ (Boolean):</strong> True أو False
+      </div>
+      <div class="tip-box"><div class="tip-icon">💡</div><div class="tip-text">اختاري أسماء واضحة للمتغيّرات! <code>عمر_المستخدم</code> أفضل من <code>x</code> — لأنك ستفهمين الكود لاحقاً بسهولة.</div></div>
+    `
+  },
+  {
+    id: 2,
+    icon: "🔀",
+    title: "الشروط (if/else)",
+    subtitle: "الدرس الثالث: اتخاذ القرارات",
+    content: `
+      <p>الشروط تُعطي الحاسوب القدرة على <strong style="color:var(--pink-dark)">اتخاذ القرارات</strong>. مثلاً: "إذا كان المستخدم أكبر من 18، اسمح له بالدخول، وإلا أرفضه."</p>
+      <div class="diagram">
+        <p style="font-weight:700;color:var(--text-dark);margin-bottom:12px;">🔀 كيف تعمل الشروط؟</p>
+        <div class="diagram-row">
+          <div class="diagram-box" style="background:white;">سؤال: هل العمر ≥ 18؟</div>
+        </div>
+        <div class="diagram-row">
+          <div class="diagram-box yellow">✅ نعم<br><small>اسمح بالدخول</small></div>
+          <div style="font-size:22px;margin:0 10px;">⬅️➡️</div>
+          <div class="diagram-box pink">❌ لا<br><small>ارفض الدخول</small></div>
+        </div>
+      </div>
+      <div class="code-block">
+        <span class="code-label">Python 🐍</span><br><br>
+        عمر = <span class="num">16</span><br><br>
+        <span class="kw">if</span> عمر >= <span class="num">18</span>:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">print</span>(<span class="str">"أهلاً، يمكنك الدخول!"</span>)<br>
+        <span class="kw">else</span>:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">print</span>(<span class="str">"آسفون، صغير السن لا يُسمح"</span>)
+      </div>
+      <div class="highlight-box">
+        <strong>📝 الكلمات المفتاحية:</strong><br>
+        🔵 <strong>if</strong> = "إذا"<br>
+        🟡 <strong>else</strong> = "وإلا"<br>
+        🟢 <strong>elif</strong> = "أو إذا" (شرط إضافي)<br><br>
+        <strong>المقارنات الشائعة:</strong>
+        <code>==</code> يساوي &nbsp;|&nbsp; <code>!=</code> لا يساوي &nbsp;|&nbsp; <code>></code> أكبر &nbsp;|&nbsp; <code><</code> أصغر
+      </div>
+      <div class="tip-box"><div class="tip-icon">💡</div><div class="tip-text">في Python، المسافة البادئة (Indentation) مهمة جداً! الكود داخل if يجب أن يكون منزاحاً للداخل بـ 4 مسافات أو Tab.</div></div>
+    `
+  },
+  {
+    id: 3,
+    icon: "🔁",
+    title: "الحلقات (Loops)",
+    subtitle: "الدرس الرابع: التكرار",
+    content: `
+      <p>الحلقات تُتيح لك <strong style="color:var(--pink-dark)">تكرار مهمة</strong> عدة مرات دون كتابة الكود مرات عديدة. تخيّلي أنك تريدين طباعة "مرحبا" 100 مرة!</p>
+      <div class="diagram">
+        <p style="font-weight:700;color:var(--text-dark);margin-bottom:12px;">🔁 كيف تعمل الحلقة؟</p>
+        <div class="diagram-row">
+          <div class="diagram-box pink">ابدأ من 1</div>
+          <div class="diagram-arrow">→</div>
+          <div class="diagram-box yellow">نفّذ المهمة</div>
+          <div class="diagram-arrow">→</div>
+          <div class="diagram-box pink">هل انتهينا؟</div>
+        </div>
+        <div class="diagram-row" style="margin-top:0;">
+          <div style="font-size:12px;color:var(--text-mid);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+          <div style="display:flex;gap:20px;font-size:13px;color:var(--text-mid);">
+            <span>❌ لا → ارجع</span>
+            <span>✅ نعم → توقف</span>
+          </div>
+        </div>
+      </div>
+      <div class="code-block">
+        <span class="code-label">Python 🐍</span><br><br>
+        <span class="cm"># طباعة الأرقام من 1 إلى 5</span><br>
+        <span class="kw">for</span> رقم <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="num">6</span>):<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">print</span>(<span class="str">"الرقم:"</span>, رقم)<br><br>
+        <span class="cm"># النتيجة:</span><br>
+        <span class="cm"># الرقم: 1</span><br>
+        <span class="cm"># الرقم: 2</span><br>
+        <span class="cm"># الرقم: 3 ...</span>
+      </div>
+      <div class="highlight-box">
+        <strong>🔁 نوعان من الحلقات:</strong><br>
+        📌 <strong>for loop:</strong> تكرار لعدد محدد مرات<br>
+        📌 <strong>while loop:</strong> تكرار ما دام الشرط صحيحاً<br><br>
+        <strong>مثال while:</strong> while العمر &lt; 18: العمر += 1
+      </div>
+      <div class="tip-box"><div class="tip-icon">⚠️</div><div class="tip-text">احذري من الحلقة اللانهائية (Infinite Loop)! إذا لم يتوقف الشرط عن كونه صحيحاً، سيعمل البرنامج للأبد وقد يتجمّد الجهاز.</div></div>
+    `
+  },
+  {
+    id: 4,
+    icon: "🛠️",
+    title: "الدوال (Functions)",
+    subtitle: "الدرس الخامس: وصفات جاهزة",
+    content: `
+      <p>الدالة (Function) هي مثل <strong style="color:var(--pink-dark)">وصفة طبخ جاهزة</strong> — تكتبينها مرة واحدة وتستخدمينها عشرات المرات!</p>
+      <div class="diagram">
+        <p style="font-weight:700;color:var(--text-dark);margin-bottom:12px;">🛠️ الدالة = آلة تحويل</p>
+        <div class="diagram-row">
+          <div class="diagram-box yellow">مدخلات<br><small>Input</small></div>
+          <div class="diagram-arrow">→</div>
+          <div class="diagram-box" style="background:linear-gradient(135deg,var(--pink-light),var(--yellow-light));border-color:var(--pink-mid);">⚙️ الدالة<br><small>تعالج البيانات</small></div>
+          <div class="diagram-arrow">→</div>
+          <div class="diagram-box pink">مخرجات<br><small>Output</small></div>
+        </div>
+      </div>
+      <div class="code-block">
+        <span class="code-label">Python 🐍</span><br><br>
+        <span class="cm"># تعريف دالة الترحيب</span><br>
+        <span class="kw">def</span> <span class="fn">رحّبي_بالمستخدم</span>(الاسم, العمر):<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">print</span>(<span class="str">"أهلاً"</span>, الاسم)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">print</span>(<span class="str">"عمرك"</span>, العمر, <span class="str">"سنة"</span>)<br><br>
+        <span class="cm"># استدعاء الدالة</span><br>
+        <span class="fn">رحّبي_بالمستخدم</span>(<span class="str">"سارة"</span>, <span class="num">20</span>)<br>
+        <span class="fn">رحّبي_بالمستخدم</span>(<span class="str">"ليلى"</span>, <span class="num">25</span>)
+      </div>
+      <div class="highlight-box">
+        <strong>🌟 لماذا نستخدم الدوال؟</strong><br>
+        ♻️ <strong>إعادة الاستخدام:</strong> اكتبي الكود مرة واحدة فقط<br>
+        📦 <strong>التنظيم:</strong> كود أنظف وأسهل للقراءة<br>
+        🐛 <strong>إصلاح الأخطاء:</strong> تصحّحين مكان واحد فيتصحح في كل مكان
+      </div>
+      <div class="tip-box"><div class="tip-icon">💡</div><div class="tip-text">قاعدة ذهبية: كلما وجدتِ نفسك تكررين نفس الكود 3 مرات فأكثر — ضعيه في دالة!</div></div>
+    `
+  }
+];
+
+const quizQuestions = [
+  {
+    q: "ما هي البرمجة بشكل مبسّط؟",
+    opts: ["لعبة فيديو", "إعطاء تعليمات للحاسوب لينفّذ مهمة", "برنامج رسم", "نوع من الرياضيات فقط"],
+    ans: 1,
+    exp: "✅ البرمجة هي إعطاء تعليمات للحاسوب بلغة يفهمها، تماماً مثل وصفة الطبخ للطاهي!"
+  },
+  {
+    q: "المتغيّر في البرمجة يشبه...",
+    opts: ["خطأ في الكود", "نافذة في الحاسوب", "صندوق يخزّن فيه معلومة", "لغة برمجة"],
+    ans: 2,
+    exp: "✅ المتغيّر هو صندوق له اسم يخزّن قيمة معينة مثل رقم أو نص."
+  },
+  {
+    q: "ما الكلمة المفتاحية التي تبدأ بها الشرط في Python؟",
+    opts: ["when", "if", "check", "condition"],
+    ans: 1,
+    exp: "✅ في Python نكتب (if) ثم الشرط ثم نقطتين (:) ثم الكود المراد تنفيذه."
+  },
+  {
+    q: "الحلقة (Loop) تُستخدم لـ...",
+    opts: ["تخزين البيانات", "تكرار مهمة عدة مرات", "إنشاء متغيّر", "فتح برنامج"],
+    ans: 1,
+    exp: "✅ الحلقة تُمكّننا من تكرار كود معين عدة مرات دون إعادة كتابته."
+  },
+  {
+    q: "أي لغة برمجة مناسبة للمبتدئين؟",
+    opts: ["Assembly", "C++", "Python", "Machine Code"],
+    ans: 2,
+    exp: "✅ Python من أسهل لغات البرمجة للمبتدئين بسبب قواعدها البسيطة وقراءتها الطبيعية."
+  },
+  {
+    q: "ماذا تفعل الدالة (Function)؟",
+    opts: ["تُحذف المتغيّرات", "تُنفّذ مجموعة أوامر عند استدعائها", "تُغيّر لون الشاشة", "تُوقف البرنامج"],
+    ans: 1,
+    exp: "✅ الدالة هي كتلة كود جاهزة تُنفَّذ عند استدعائها، مما يوفّر الوقت ويُنظّم الكود."
+  },
+  {
+    q: "ما نوع المتغيّر الذي يخزّن نصاً؟",
+    opts: ["Integer", "Boolean", "Float", "String"],
+    ans: 3,
+    exp: '✅ String يخزّن النصوص مثل "مرحبا" و"سارة". يُكتب دائماً داخل علامات تنصيص.'
+  },
+  {
+    q: "ماذا يعني == في البرمجة؟",
+    opts: ["تعيين قيمة", "أكبر من", "مقارنة: هل يساوي؟", "لا يساوي"],
+    ans: 2,
+    exp: "✅ علامة == تُستخدم للمقارنة، بينما = تُستخدم لتعيين القيمة. فرق مهم جداً!"
+  }
+];
+
+const glossaryItems = [
+  { icon: "🔤", term: "Algorithm (خوارزمية)", def: "مجموعة خطوات مرتبة لحل مشكلة. مثل وصفة الطبخ — كل خطوة لها ترتيب محدد للوصول إلى النتيجة." },
+  { icon: "🐛", term: "Bug (خطأ برمجي)", def: "خطأ في الكود يجعل البرنامج يعمل بشكل خاطئ. اسمه مستوحى من حشرة وجدها مبرمجون في جهاز قديم!" },
+  { icon: "🔍", term: "Debugging (تصحيح الأخطاء)", def: "عملية البحث عن الأخطاء في الكود وإصلاحها. أهم مهارة يحتاجها أي مبرمج." },
+  { icon: "📚", term: "Library (مكتبة)", def: "مجموعة كود جاهز يمكن إضافته لبرنامجك. مثل قاموس جاهز — تستخدمينه دون الحاجة لكتابته من الصفر." },
+  { icon: "🖥️", term: "Compiler (مترجم)", def: "برنامج يُحوّل الكود الذي تكتبينه إلى لغة يفهمها الحاسوب (أصفار وواحدات)." },
+  { icon: "📝", term: "Syntax (صياغة)", def: "قواعد كتابة لغة البرمجة. مثل قواعد اللغة العربية — يجب الالتزام بها وإلا لن يفهم الحاسوب الكود." },
+  { icon: "🌐", term: "API", def: "واجهة تُتيح للبرامج التواصل مع بعضها. مثلاً، تطبيق الطقس يستخدم API لأخذ البيانات من الإنترنت." },
+  { icon: "☁️", term: "Cloud (السحابة)", def: "تخزين ومعالجة البيانات على خوادم بعيدة عبر الإنترنت بدلاً من جهازك. مثل Google Drive وiCloud." },
+  { icon: "🔒", term: "Encryption (تشفير)", def: "تحويل البيانات إلى صيغة غير مقروءة لحمايتها. يستخدمه واتساب لحماية محادثاتك." },
+  { icon: "⚙️", term: "Framework (إطار عمل)", def: "هيكل جاهز يُسرّع بناء التطبيقات. مثل هيكل المبنى الجاهز الذي تُكمّلين عليه التشطيبات." },
+];
+
+// ===== STATE =====
+let score = 0;
+let currentLesson = 0;
+let completedLessons = new Set();
+let quizState = { current: 0, answered: 0, correct: 0, shown: false };
+let shuffledQuiz = [...quizQuestions].sort(() => Math.random() - 0.5);
+
+// ===== INIT =====
+function init() {
+  createBubbles();
+  renderLessonNav();
+  showLesson(0);
+  renderGlossary();
+  renderQuiz();
+}
+
+function createBubbles() {
+  const c = document.getElementById('bubbles');
+  const colors = ['#f8bbd0','#ffeb3b','#fce4ec','#fff176','#f48fb1'];
+  for(let i=0;i<18;i++){
+    const b = document.createElement('div');
+    b.className = 'bubble';
+    const size = 20+Math.random()*60;
+    b.style.cssText = `
+      width:${size}px;height:${size}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      left:${Math.random()*100}%;
+      animation-duration:${8+Math.random()*12}s;
+      animation-delay:${Math.random()*8}s;
+    `;
+    c.appendChild(b);
+  }
+}
+
+// ===== LESSON =====
+function renderLessonNav() {
+  const nav = document.getElementById('lessonNav');
+  nav.innerHTML = lessons.map((l,i) => `
+    <button class="lesson-btn ${i===currentLesson?'active':''} ${completedLessons.has(i)?'done':''}"
+      onclick="showLesson(${i})">
+      ${completedLessons.has(i)?'✅ ':l.icon+' '}${l.title}
+    </button>
+  `).join('');
+}
+
+function showLesson(idx) {
+  currentLesson = idx;
+  const l = lessons[idx];
+  document.getElementById('lessonContent').innerHTML = `
+    <div class="card" style="animation-delay:0.1s">
+      <div class="card-header">
+        <div class="card-icon">${l.icon}</div>
+        <div>
+          <div class="card-title">${l.title}</div>
+          <div class="card-subtitle">${l.subtitle}</div>
+        </div>
+      </div>
+      ${l.content}
+      <div style="margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        ${idx > 0 ? `<button class="btn btn-secondary" onclick="showLesson(${idx-1})">⬅️ السابق</button>` : ''}
+        <button class="btn btn-primary" onclick="completeLesson(${idx})">
+          ${completedLessons.has(idx) ? '✅ مكتمل' : '🎯 أكملت هذا الدرس!'}
+        </button>
+        ${idx < lessons.length-1 ? `<button class="btn btn-secondary" onclick="showLesson(${idx+1})">التالي ➡️</button>` : ''}
+      </div>
+    </div>
+  `;
+  renderLessonNav();
+}
+
+function completeLesson(idx) {
+  if(!completedLessons.has(idx)){
+    completedLessons.add(idx);
+    addScore(50);
+    spawnConfetti();
+    updateProgress();
+  }
+  showLesson(idx);
+}
+
+function updateProgress() {
+  const pct = Math.round((completedLessons.size / lessons.length) * 100);
+  document.getElementById('progressBar').style.width = pct+'%';
+  document.getElementById('progressLabel').textContent =
+    pct===100 ? '🎉 أكملتِ جميع الدروس! أنتِ نجمة! ⭐' :
+    `${completedLessons.size} من ${lessons.length} دروس مكتملة (${pct}%)`;
+}
+
+// ===== QUIZ =====
+function renderQuiz() {
+  const c = document.getElementById('quizContainer');
+  if(quizState.shown){
+    showResult(c); return;
+  }
+  const q = shuffledQuiz[quizState.current];
+  const letters = ['أ','ب','ج','د'];
+  c.innerHTML = `
+    <div class="quiz-card" style="animation:fadeIn 0.4s ease;">
+      <div class="quiz-q-num">سؤال ${quizState.current+1} من ${shuffledQuiz.length}</div>
+      <div class="quiz-question">${q.q}</div>
+      <div class="quiz-options" id="opts">
+        ${q.opts.map((o,i)=>`
+          <button class="quiz-option" onclick="answerQ(${i})" id="opt${i}">
+            <span class="option-dot">${letters[i]}</span>
+            ${o}
+          </button>
+        `).join('')}
+      </div>
+      <div class="feedback" id="fb"></div>
+      <div class="quiz-nav" id="qnav" style="display:none;">
+        <button class="btn btn-primary" onclick="nextQ()">
+          ${quizState.current < shuffledQuiz.length-1 ? 'التالي ➡️' : '🏆 عرض النتيجة'}
+        </button>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:12px;color:var(--text-mid);font-size:13px;font-weight:600;">
+      ✅ إجابات صحيحة: ${quizState.correct} | 📝 تم الإجابة: ${quizState.answered}
+    </div>
+  `;
+}
+
+function answerQ(chosen) {
+  const q = shuffledQuiz[quizState.current];
+  const opts = document.querySelectorAll('.quiz-option');
+  const fb = document.getElementById('fb');
+  opts.forEach(o => o.classList.add('selected'));
+  opts[q.ans].classList.add('correct');
+  if(chosen !== q.ans) opts[chosen].classList.add('wrong');
+  fb.className = 'feedback show ' + (chosen===q.ans?'ok':'no');
+  fb.textContent = q.exp;
+  quizState.answered++;
+  if(chosen===q.ans){ quizState.correct++; addScore(20); }
+  document.getElementById('qnav').style.display = 'flex';
+}
+
+function nextQ() {
+  quizState.current++;
+  if(quizState.current >= shuffledQuiz.length){ quizState.shown=true; }
+  renderQuiz();
+}
+
+function showResult(c) {
+  const pct = Math.round((quizState.correct/shuffledQuiz.length)*100);
+  const emoji = pct>=80?'🎉':pct>=60?'😊':'💪';
+  const msg = pct>=80?'ممتاز! أنتِ نجمة البرمجة!':pct>=60?'جيد جداً! استمري!':'تدرّبي أكثر وستتقنيها!';
+  const stars = pct>=80?'⭐⭐⭐':pct>=60?'⭐⭐':'⭐';
+  if(pct>=80) spawnConfetti();
+  c.innerHTML = `
+    <div class="result-card">
+      <span class="result-emoji">${emoji}</span>
+      <div class="result-score">${quizState.correct}/${shuffledQuiz.length}</div>
+      <div class="stars">${stars}</div>
+      <div class="result-msg">${msg}</div>
+      <div style="font-size:14px;color:var(--text-mid);margin-bottom:20px;">نسبة النجاح: ${pct}%</div>
+      <button class="btn btn-primary" onclick="restartQuiz()">🔄 ابدئي من جديد</button>
+    </div>
+  `;
+}
+
+function restartQuiz() {
+  quizState = { current:0, answered:0, correct:0, shown:false };
+  shuffledQuiz = [...quizQuestions].sort(() => Math.random()-0.5);
+  renderQuiz();
+}
+
+// ===== GLOSSARY =====
+function renderGlossary() {
+  document.getElementById('glossaryList').innerHTML = glossaryItems.map((g,i)=>`
+    <div class="glossary-item" style="animation-delay:${i*0.06}s;animation:fadeIn 0.4s ease ${i*0.06}s both;">
+      <div class="glossary-icon">${g.icon}</div>
+      <div>
+        <div class="glossary-term">${g.term}</div>
+        <div class="glossary-def">${g.def}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== TABS =====
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// ===== SCORE =====
+function addScore(pts) {
+  score += pts;
+  document.getElementById('scoreDisplay').textContent = `⭐ ${score} نقطة`;
+}
+
+// ===== CONFETTI =====
+function spawnConfetti() {
+  const colors = ['#f48fb1','#ffeb3b','#f8bbd0','#fff176','#e91e8c','#ffc107'];
+  for(let i=0;i<40;i++){
+    const c = document.createElement('div');
+    c.className = 'confetti-piece';
+    c.style.cssText = `
+      left:${Math.random()*100}vw;
+      top:${-10+Math.random()*-30}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-delay:${Math.random()*0.5}s;
+      width:${6+Math.random()*8}px;
+      height:${6+Math.random()*8}px;
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+    `;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),2500);
+  }
+}
+
+init();
+</script>
+</body>
+</html>
